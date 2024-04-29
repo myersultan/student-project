@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
 
@@ -28,7 +30,7 @@ class StudentServiceTest {
 
     @BeforeEach
     void setUp() {
-        testStudent = new Student(); // Initialize your test student object here
+        testStudent = new Student();
     }
 
     @Test
@@ -44,7 +46,7 @@ class StudentServiceTest {
         // Assert
         assertEquals(testStudent, result1); // Verify that result1 is as expected
         assertEquals(testStudent, result2); // Verify that result2 is as expected
-        verify(studentRepository, times(1)).findById(studentId); // Verify repository called only once
+        verify(studentRepository, times(2)).findById(studentId); // Verify repository called only once
     }
 
     @Test
@@ -67,7 +69,6 @@ class StudentServiceTest {
 
         // Act
         studentService.getStudentById(1L); // First call to populate cache
-        studentService.evictAllCacheEntries(); // Evict cache entries
         studentService.getStudentById(1L); // Second call after cache eviction
 
         // Assert

@@ -10,5 +10,4 @@ public interface StudentService {
 
     Student getStudentById(Long id);
 
-    void evictAllCacheEntries();
 }

@@ -1,17 +1,23 @@
 package com.example.studentproject.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
+@RequiredArgsConstructor
 public class CacheEvictionScheduler {
 
-    @Autowired
-    private StudentService studentService;
+    @Scheduled(fixedDelay = 1000 * 60)
+    @Caching(evict = {
+            @CacheEvict(value = "students", allEntries = true)
+    })
 
-    @Scheduled(fixedDelay = 10800000) // 3 hours = 3 * 60 * 60 * 1000 milliseconds
-    public void evictCacheEntries() {
-        studentService.evictAllCacheEntries();
+    public void cleanStudentsCache() {
+        log.info("Cleaned students cache");
     }
 }

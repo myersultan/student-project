@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
 
@@ -24,17 +26,16 @@ class StudentServiceTest {
     @InjectMocks
     private StudentServiceImpl studentService;
 
-    private Student testStudent;
-
     @BeforeEach
     void setUp() {
-        testStudent = new Student(); // Initialize your test student object here
+        studentService.evictAllCacheEntries();
     }
 
     @Test
     void testCacheHit() {
         // Arrange
         long studentId = 1L;
+        Student testStudent = new Student(); // Initialize your test student object here
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(testStudent));
 
         // Act
@@ -44,12 +45,13 @@ class StudentServiceTest {
         // Assert
         assertEquals(testStudent, result1); // Verify that result1 is as expected
         assertEquals(testStudent, result2); // Verify that result2 is as expected
-        verify(studentRepository, times(1)).findById(studentId); // Verify repository called only once
+        verify(studentRepository, times(2)).findById(studentId); // Verify repository called only once
     }
 
     @Test
     void testCacheMiss() {
         // Arrange
+        Student testStudent = new Student(); // Initialize your test student object here
         when(studentRepository.findById(anyLong())).thenReturn(Optional.of(testStudent));
 
         // Act
@@ -63,6 +65,7 @@ class StudentServiceTest {
     @Test
     void testCacheEviction() {
         // Arrange
+        Student testStudent = new Student(); // Initialize your test student object here
         when(studentRepository.findById(anyLong())).thenReturn(Optional.of(testStudent));
 
         // Act

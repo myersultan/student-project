@@ -31,11 +31,7 @@ public class StudentServiceImpl implements StudentService {
     public Student getStudentById(Long id) {
         log.info("get student by id: {}", id);
         Optional<Student> optionalStudent = studentRepository.findById(id);
-        if (optionalStudent.isPresent()) {
-            return optionalStudent.get();
-        } else {
-            return null;
-        }
+        return optionalStudent.orElse(null);
     }
 
     @CacheEvict(value = "students", allEntries = true, beforeInvocation = true)

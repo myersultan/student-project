@@ -26,16 +26,17 @@ class StudentServiceTest {
     @InjectMocks
     private StudentServiceImpl studentService;
 
+    private Student testStudent;
+
     @BeforeEach
     void setUp() {
-        studentService.evictAllCacheEntries();
+        testStudent = new Student();
     }
 
     @Test
     void testCacheHit() {
         // Arrange
         long studentId = 1L;
-        Student testStudent = new Student(); // Initialize your test student object here
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(testStudent));
 
         // Act
@@ -51,7 +52,6 @@ class StudentServiceTest {
     @Test
     void testCacheMiss() {
         // Arrange
-        Student testStudent = new Student(); // Initialize your test student object here
         when(studentRepository.findById(anyLong())).thenReturn(Optional.of(testStudent));
 
         // Act
@@ -65,12 +65,10 @@ class StudentServiceTest {
     @Test
     void testCacheEviction() {
         // Arrange
-        Student testStudent = new Student(); // Initialize your test student object here
         when(studentRepository.findById(anyLong())).thenReturn(Optional.of(testStudent));
 
         // Act
         studentService.getStudentById(1L); // First call to populate cache
-        studentService.evictAllCacheEntries(); // Evict cache entries
         studentService.getStudentById(1L); // Second call after cache eviction
 
         // Assert

@@ -46,7 +46,7 @@ class StudentServiceTest {
         // Assert
         assertEquals(testStudent, result1); // Verify that result1 is as expected
         assertEquals(testStudent, result2); // Verify that result2 is as expected
-        verify(studentRepository, times(2)).findById(studentId); // Verify repository called only once
+        verify(studentRepository, times(1)).findById(studentId); // Verify repository called only once
     }
 
     @Test

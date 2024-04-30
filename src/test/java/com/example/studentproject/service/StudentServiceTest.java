@@ -62,16 +62,4 @@ class StudentServiceTest {
         verify(studentRepository, times(2)).findById(anyLong()); // Verify repository called twice
     }
 
-    @Test
-    void testCacheEviction() {
-        // Arrange
-        when(studentRepository.findById(anyLong())).thenReturn(Optional.of(testStudent));
-
-        // Act
-        studentService.getStudentById(1L); // First call to populate cache
-        studentService.getStudentById(1L); // Second call after cache eviction
-
-        // Assert
-        verify(studentRepository, times(2)).findById(anyLong()); // Verify repository called twice
-    }
 }
